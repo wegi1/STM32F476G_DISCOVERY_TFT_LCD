@@ -20,7 +20,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
+#include <stdio.h>
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -114,8 +114,10 @@ int main(void)
     BSP_LCD_SelectLayer(0);
     BSP_LCD_Clear(LCD_COLOR_BLUE);
 
+    uint16_t oldx = 1,oldy = 1;
 
-    BSP_LCD_DisplayStringAt(239, 136, (uint8_t *)"Hello!", LEFT_MODE);
+
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -124,11 +126,24 @@ int main(void)
   {
     /* USER CODE END WHILE */
 	  BSP_TS_GetState(&ts);
-	  sprintf(xTouchStr, "X: %3d", ts.touchX[0]);
-	  BSP_LCD_DisplayStringAt(20, 20, (uint8_t *)xTouchStr, LEFT_MODE);
 
-	  sprintf(xTouchStr, "Y: %3d", ts.touchY[0]);
-	  BSP_LCD_DisplayStringAt(20, 60, (uint8_t *)xTouchStr, LEFT_MODE);
+
+
+	  if((oldx != ts.touchX[0]) || (oldy != ts.touchY[0]))
+	  {
+		  BSP_LCD_SetTextColor(LCD_COLOR_BLUE);
+		  if(oldy < 5) oldy = 5;
+		  if(oldx < 2) oldx = 2;
+		  BSP_LCD_FillRect(oldx-2,oldy-5,105,30);
+		  BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+		  sprintf(xTouchStr, "X: %3d", ts.touchX[0]);
+		  BSP_LCD_DisplayStringAt(30, 50, (uint8_t *)xTouchStr, LEFT_MODE);
+		  sprintf(xTouchStr, "Y: %3d", ts.touchY[0]);
+		  BSP_LCD_DisplayStringAt(30, 90, (uint8_t *)xTouchStr, LEFT_MODE);
+		  BSP_LCD_DisplayStringAt(ts.touchX[0], ts.touchY[0], (uint8_t *)"Hello!", LEFT_MODE);
+		  oldx = ts.touchX[0];
+		  oldy = ts.touchY[0];
+	  }
 	  HAL_Delay(50);
     /* USER CODE BEGIN 3 */
   }
